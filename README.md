@@ -52,7 +52,7 @@ py -3.12 -m venv .venv
 
 On Linux, create the environment with `python3.12 -m venv .venv` and use `.venv/bin/python` for the Python commands.
 
-Open http://localhost:8501 and select a model. The app uses the included `test_data.csv` by default. Upload a different labeled CSV to evaluate it instead. The app shows the six evaluation metrics, a confusion matrix, and a classification report with precision, recall, F1, and support for each fault type. It loads the saved model from `model/` and uses the `Fault` column as the true label.
+Open http://localhost:8501 to compare the five models on the included `test_data.csv`. The dataset preview shows the rows and columns used for the selected model. Upload a different labeled CSV to evaluate it instead. The app shows six metrics, a confusion matrix heatmap, and a classification report. It loads the saved models from `model/` and uses the `Fault` column as the true label.
 
 To reproduce the trained models and test CSV, run the training script. It downloads the source data from UCI.
 
