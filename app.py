@@ -1,7 +1,7 @@
 import joblib
 import pandas as pd
 import streamlit as st
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix
 
 from evaluation import MODEL_DIR, MODEL_FILES, PROJECT_DIR, TARGET, evaluate
 
@@ -38,12 +38,13 @@ def main():
     st.set_page_config(page_title="Steel Plate Fault Classification")
     st.title("Steel Plate Fault Classification")
     upload = st.file_uploader("Test CSV (optional)", type="csv")
-    name = st.selectbox("Model", MODEL_FILES)
     source = upload
     if upload is None:
         source = PROJECT_DIR / "test_data.csv"
         st.caption("Using the included test_data.csv. Upload a labeled CSV to use it instead.")
 
+    st.subheader("Select Classification Model")
+    name = st.selectbox("Model", MODEL_FILES)
     model = load_model(name)
     try:
         features, actual = read_test_data(source, model)
@@ -52,7 +53,7 @@ def main():
         return
 
     metrics, predicted = evaluate(model, features, actual)
-    st.subheader("Evaluation metrics")
+    st.subheader("Model Evaluation Results")
     st.write(f"Test rows: {len(actual)}")
     st.table(pd.DataFrame({
         "Metric": metrics.keys(),
@@ -61,11 +62,19 @@ def main():
     if metrics["AUC"] is None:
         st.caption("AUC requires at least one test row from each fault class.")
 
-    st.subheader("Confusion matrix")
+    st.subheader("Confusion Matrix")
     labels = model.classes_
     matrix = confusion_matrix(actual, predicted, labels=labels)
     st.dataframe(pd.DataFrame(matrix, index=labels, columns=labels))
     st.caption("Rows are actual fault types. Columns are predicted fault types.")
+
+    st.subheader("Classification Report")
+    report = classification_report(
+        actual, predicted, labels=labels, output_dict=True, zero_division=0,
+    )
+    scores = pd.DataFrame(report).T.loc[[*labels, "macro avg", "weighted avg"]].round(4)
+    scores["support"] = scores["support"].astype(int)
+    st.dataframe(scores)
 
 
 if __name__ == "__main__":
