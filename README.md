@@ -52,7 +52,7 @@ py -3.12 -m venv .venv
 
 On Linux, create the environment with `python3.12 -m venv .venv` and use `.venv/bin/python` for the Python commands.
 
-Open http://localhost:8501, upload `test_data.csv`, and select a model. The app shows the six evaluation metrics and a confusion matrix. It loads the saved model from `model/` and uses the `Fault` column as the true label.
+Open http://localhost:8501 and select a model. The app uses the included `test_data.csv` by default. Upload a different labeled CSV to evaluate it instead. The app shows the six evaluation metrics and a confusion matrix. It loads the saved model from `model/` and uses the `Fault` column as the true label.
 
 To reproduce the trained models and test CSV, run the training script. It downloads the source data from UCI.
 

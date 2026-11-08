@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 from sklearn.metrics import confusion_matrix
 
-from evaluation import MODEL_DIR, MODEL_FILES, TARGET, evaluate
+from evaluation import MODEL_DIR, MODEL_FILES, PROJECT_DIR, TARGET, evaluate
 
 
 @st.cache_resource
@@ -11,9 +11,9 @@ def load_model(name):
     return joblib.load(MODEL_DIR / MODEL_FILES[name])
 
 
-def read_test_data(upload, model):
+def read_test_data(source, model):
     try:
-        data = pd.read_csv(upload)
+        data = pd.read_csv(source)
     except (ValueError, pd.errors.ParserError) as exc:
         raise ValueError("Could not read the file as a CSV.") from exc
 
@@ -37,16 +37,16 @@ def read_test_data(upload, model):
 def main():
     st.set_page_config(page_title="Steel Plate Fault Classification")
     st.title("Steel Plate Fault Classification")
-    st.write("Upload a labeled test CSV and select a trained model.")
-    upload = st.file_uploader("Test CSV", type="csv")
+    upload = st.file_uploader("Test CSV (optional)", type="csv")
     name = st.selectbox("Model", MODEL_FILES)
+    source = upload
     if upload is None:
-        st.info("Use test_data.csv from the repository to try the app.")
-        return
+        source = PROJECT_DIR / "test_data.csv"
+        st.caption("Using the included test_data.csv. Upload a labeled CSV to use it instead.")
 
     model = load_model(name)
     try:
-        features, actual = read_test_data(upload, model)
+        features, actual = read_test_data(source, model)
     except ValueError as exc:
         st.error(str(exc))
         return
