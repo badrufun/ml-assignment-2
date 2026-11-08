@@ -36,6 +36,10 @@ I report macro precision, recall, and F1, which give each fault type the same we
 
 I chose the SVM as the overall winner because it had the best macro F1 and MCC. The Decision Tree was close and had better macro recall. This comparison is based on one held-out split.
 
+## Live app
+
+[Steel Plate Fault Classification on Streamlit](https://cruouklzcc5di4pphwrphx.streamlit.app/)
+
 ## Run the app locally
 
 I used Python 3.12. From the project directory, run the following commands in PowerShell.
